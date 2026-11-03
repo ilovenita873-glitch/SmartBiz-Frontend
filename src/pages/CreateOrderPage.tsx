@@ -92,107 +92,127 @@ const CreateOrderPage = () => {
 
   return (
     <div>
-      <h1 style={{ marginBottom: '24px', fontSize: '28px' }}>Buyurtma yaratish</h1>
-
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: '24px' }}>
+      <div className="page-header">
         <div>
-          <h2 style={{ marginBottom: '16px', fontSize: '18px' }}>Mahsulotlar</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '12px' }}>
-            {products.map((product) => (
-              <div
-                key={product._id}
-                onClick={() => addToCart(product)}
-                style={{ background: 'white', borderRadius: '10px', padding: '16px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', cursor: 'pointer' }}
-              >
-                <div style={{ fontWeight: 600, marginBottom: '4px' }}>{product.name}</div>
-                <div style={{ color: '#e94560', fontWeight: 700 }}>{product.price.toLocaleString()} so‘m</div>
-                <div style={{ fontSize: '12px', color: '#888', marginTop: '4px' }}>Qoldiq: {product.quantity}</div>
-              </div>
-            ))}
-          </div>
+          <h1 className="page-title">Buyurtma yaratish</h1>
+          <p className="page-subtitle">Mahsulotni bosib savatga qo‘shing</p>
+        </div>
+      </div>
+
+      <div className="order-layout">
+        <div>
+          <h2 className="section-title">Mahsulotlar</h2>
+          {products.length === 0 && !error ? (
+            <div className="center-state">
+              <div className="empty-icon">📭</div>
+              <span>Sotuvga tayyor mahsulot yo‘q</span>
+            </div>
+          ) : (
+            <div className="pick-grid">
+              {products.map((product) => {
+                const selected = cart.some((i) => i.product._id === product._id);
+                return (
+                  <button
+                    type="button"
+                    key={product._id}
+                    onClick={() => addToCart(product)}
+                    className={`pick-card${selected ? ' selected' : ''}`}
+                  >
+                    <div className="pick-name">{product.name}</div>
+                    <div className="price" style={{ fontSize: 16 }}>
+                      {product.price.toLocaleString()} so‘m
+                    </div>
+                    <div className="pick-stock">Qoldiq: {product.quantity}</div>
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
-        <div style={{ background: 'white', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', height: 'fit-content', position: 'sticky', top: '24px' }}>
-          <h2 style={{ marginBottom: '16px', fontSize: '18px' }}>Savat</h2>
+        <div className="card cart">
+          <h2 className="section-title">🛒 Savat</h2>
 
-          {error && (
-            <div style={{ background: '#fee', color: '#c00', padding: '10px', borderRadius: '8px', marginBottom: '12px', fontSize: '13px' }}>
-              {error}
-            </div>
-          )}
-
-          {success && (
-            <div style={{ background: '#e8f5e9', color: '#2e7d32', padding: '10px', borderRadius: '8px', marginBottom: '12px', fontSize: '13px' }}>
-              Buyurtma yaratildi!
-            </div>
-          )}
+          {error && <div className="alert alert-error">{error}</div>}
+          {success && <div className="alert alert-success">✅ Buyurtma yaratildi!</div>}
 
           {cart.length === 0 ? (
-            <p style={{ color: '#999', fontSize: '14px', marginBottom: '16px' }}>Savat bo‘sh</p>
+            <div className="cart-empty">Savat bo‘sh</div>
           ) : (
-            <div style={{ marginBottom: '16px' }}>
+            <>
               {cart.map((item) => (
-                <div key={item.product._id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px', fontSize: '14px' }}>
+                <div key={item.product._id} className="cart-item">
                   <div>
-                    <div style={{ fontWeight: 500 }}>{item.product.name}</div>
-                    <div style={{ color: '#888', fontSize: '12px' }}>{item.product.price.toLocaleString()} × {item.quantity}</div>
+                    <div className="cart-item-name">{item.product.name}</div>
+                    <div className="cart-item-meta">
+                      {item.product.price.toLocaleString()} × {item.quantity}
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div className="stepper">
+                    <button
+                      type="button"
+                      onClick={() => updateQuantity(item.product._id, item.quantity - 1)}
+                    >
+                      −
+                    </button>
                     <input
                       type="number"
                       value={item.quantity}
                       min={1}
                       max={item.product.quantity}
-                      onChange={(e: ChangeEvent<HTMLInputElement>) => updateQuantity(item.product._id, Number(e.target.value))}
-                      style={{ width: '50px', padding: '4px 6px', border: '1px solid #ddd', borderRadius: '6px', fontSize: '13px' }}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        updateQuantity(item.product._id, Number(e.target.value))
+                      }
                     />
-                    <button type="button" onClick={() => removeFromCart(item.product._id)} style={{ background: 'none', border: 'none', color: '#c00', fontSize: '16px', cursor: 'pointer' }}>
+                    <button
+                      type="button"
+                      onClick={() => updateQuantity(item.product._id, item.quantity + 1)}
+                    >
+                      +
+                    </button>
+                    <button
+                      type="button"
+                      className="remove"
+                      onClick={() => removeFromCart(item.product._id)}
+                    >
                       ×
                     </button>
                   </div>
                 </div>
               ))}
-              <div style={{ borderTop: '1px solid #eee', paddingTop: '12px', fontWeight: 700, fontSize: '16px' }}>
-                Jami: {totalAmount.toLocaleString()} so‘m
+
+              <div className="cart-total">
+                <span>Jami:</span>
+                <span className="price">{totalAmount.toLocaleString()} so‘m</span>
               </div>
-            </div>
+            </>
           )}
 
-          <form onSubmit={handleSubmit}>
-            <div style={{ marginBottom: '12px' }}>
-              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 500 }}>Mijoz ismi *</label>
+          <form onSubmit={handleSubmit} style={{ marginTop: 8 }}>
+            <div className="field">
+              <label className="label">Mijoz ismi *</label>
               <input
+                className="input"
                 value={customerName}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setCustomerName(e.target.value)}
                 placeholder="Ism Familya"
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
               />
             </div>
 
-            <div style={{ marginBottom: '16px' }}>
-              <label style={{ display: 'block', marginBottom: '4px', fontSize: '13px', fontWeight: 500 }}>Telefon</label>
+            <div className="field">
+              <label className="label">Telefon</label>
               <input
+                className="input"
                 value={customerPhone}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setCustomerPhone(e.target.value)}
                 placeholder="+998 90 123 45 67"
-                style={{ width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: '8px', fontSize: '14px', outline: 'none' }}
               />
             </div>
 
             <button
               type="submit"
               disabled={loading || cart.length === 0}
-              style={{
-                width: '100%',
-                background: loading || cart.length === 0 ? '#999' : '#e94560',
-                color: 'white',
-                border: 'none',
-                padding: '12px',
-                borderRadius: '8px',
-                fontWeight: 600,
-                fontSize: '15px',
-                cursor: 'pointer',
-              }}
+              className="btn btn-primary btn-block"
             >
               {loading ? 'Yaratilmoqda...' : 'Buyurtma berish'}
             </button>

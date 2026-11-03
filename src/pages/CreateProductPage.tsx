@@ -53,150 +53,83 @@ const CreateProductPage = () => {
 
   return (
     <div>
-      <h1 style={{ marginBottom: '24px', fontSize: '28px' }}>Yangi mahsulot qo‘shish</h1>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Yangi mahsulot</h1>
+          <p className="page-subtitle">Omborga yangi mahsulot qo‘shish</p>
+        </div>
+      </div>
 
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          background: 'white',
-          padding: '32px',
-          borderRadius: '12px',
-          boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
-          maxWidth: '560px',
-        }}
-      >
-        {error && (
-          <div style={{ background: '#fee', color: '#c00', padding: '12px 16px', borderRadius: '8px', marginBottom: '16px' }}>
-            {error}
-          </div>
-        )}
+      <form onSubmit={handleSubmit} className="card" style={{ maxWidth: 600, padding: 32 }}>
+        {error && <div className="alert alert-error">{error}</div>}
         {success && (
-          <div style={{ background: '#e8f5e9', color: '#2e7d32', padding: '12px 16px', borderRadius: '8px', marginBottom: '16px' }}>
-            Mahsulot muvaffaqiyatli qo‘shildi! Yo‘naltirilmoqda...
+          <div className="alert alert-success">
+            ✅ Mahsulot muvaffaqiyatli qo‘shildi! Yo‘naltirilmoqda...
           </div>
         )}
 
-        <div style={{ marginBottom: '16px' }}>
-          <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500, fontSize: '14px' }}>
-            Nomi *
-          </label>
+        <div className="field">
+          <label className="label">Nomi *</label>
           <input
+            className="input"
             name="name"
             value={form.name}
             onChange={handleChange}
             placeholder="Mahsulot nomi"
-            style={{
-              width: '100%',
-              padding: '10px 14px',
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              fontSize: '14px',
-              outline: 'none',
-            }}
           />
         </div>
 
-        <div style={{ marginBottom: '16px' }}>
-          <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500, fontSize: '14px' }}>
-            Tavsif
-          </label>
+        <div className="field">
+          <label className="label">Tavsif</label>
           <textarea
+            className="textarea"
             name="description"
             value={form.description}
             onChange={handleChange}
             placeholder="Qisqacha tavsif"
             rows={3}
-            style={{
-              width: '100%',
-              padding: '10px 14px',
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              fontSize: '14px',
-              outline: 'none',
-              resize: 'vertical',
-            }}
           />
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-          <div>
-            <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500, fontSize: '14px' }}>
-              Narxi (so‘m) *
-            </label>
+        <div className="form-grid-2">
+          <div className="field">
+            <label className="label">Narxi (so‘m) *</label>
             <input
+              className="input"
               name="price"
               type="number"
+              min="0"
               value={form.price}
               onChange={handleChange}
               placeholder="0"
-              min="0"
-              style={{
-                width: '100%',
-                padding: '10px 14px',
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                fontSize: '14px',
-                outline: 'none',
-              }}
             />
           </div>
-          <div>
-            <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500, fontSize: '14px' }}>
-              Miqdori *
-            </label>
+          <div className="field">
+            <label className="label">Miqdori *</label>
             <input
+              className="input"
               name="quantity"
               type="number"
+              min="0"
               value={form.quantity}
               onChange={handleChange}
               placeholder="0"
-              min="0"
-              style={{
-                width: '100%',
-                padding: '10px 14px',
-                border: '1px solid #ddd',
-                borderRadius: '8px',
-                fontSize: '14px',
-                outline: 'none',
-              }}
             />
           </div>
         </div>
 
-        <div style={{ marginBottom: '24px' }}>
-          <label style={{ display: 'block', marginBottom: '6px', fontWeight: 500, fontSize: '14px' }}>
-            Kategoriya *
-          </label>
+        <div className="field" style={{ marginBottom: 24 }}>
+          <label className="label">Kategoriya *</label>
           <input
+            className="input"
             name="category"
             value={form.category}
             onChange={handleChange}
             placeholder="Masalan: Elektronika"
-            style={{
-              width: '100%',
-              padding: '10px 14px',
-              border: '1px solid #ddd',
-              borderRadius: '8px',
-              fontSize: '14px',
-              outline: 'none',
-            }}
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            width: '100%',
-            background: loading ? '#999' : '#e94560',
-            color: 'white',
-            border: 'none',
-            padding: '12px',
-            borderRadius: '8px',
-            fontWeight: 600,
-            fontSize: '15px',
-          }}
-        >
+        <button type="submit" disabled={loading} className="btn btn-primary btn-block">
           {loading ? 'Saqlanmoqda...' : 'Mahsulot qo‘shish'}
         </button>
       </form>

@@ -1,91 +1,85 @@
-import { Link, useLocation } from 'react-router-dom';
 import { ReactNode } from 'react';
+import { NavLink, Outlet, useNavigate } from 'react-router-dom';
+import { logout } from '../services/api';
 
-interface LayoutProps {
-  children: ReactNode;
-}
+const links = [
+  { to: '/products', label: 'Mahsulotlar' },
+  { to: '/products/create', label: 'Yangi mahsulot' },
+  { to: '/orders/create', label: 'Buyurtma yaratish' },
+  { to: '/statistics', label: 'Statistika' },
+];
 
-const Layout = ({ children }: LayoutProps) => {
-  const location = useLocation();
+const Layout = ({ children }: { children?: ReactNode }) => {
+  const navigate = useNavigate();
 
-  const isActive = (path: string) => location.pathname === path;
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      <header
-        style={{
-          background: '#1a1a2e',
-          color: 'white',
-          padding: '0 24px',
-          height: '64px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-        }}
-      >
-        <div style={{ fontWeight: 700, fontSize: '20px' }}>SmartBiz</div>
+    <>
+      <header style={{ background: '#1a1a2e', boxShadow: '0 2px 12px rgba(0,0,0,0.18)' }}>
+        <div
+          style={{
+            maxWidth: 1200,
+            margin: '0 auto',
+            padding: '0 24px',
+            height: 64,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 24,
+          }}
+        >
+          <NavLink to="/products" style={{ color: 'white', fontWeight: 800, fontSize: 20 }}>
+            SmartBiz
+          </NavLink>
 
-        <nav style={{ display: 'flex', gap: '8px' }}>
-          <Link
-            to="/products"
-            style={{
-              padding: '8px 16px',
-              borderRadius: '6px',
-              background: isActive('/products') || isActive('/') ? '#e94560' : 'transparent',
-              color: 'white',
-              fontSize: '14px',
-              fontWeight: 500,
-            }}
-          >
-            Mahsulotlar
-          </Link>
-          <Link
-            to="/products/create"
-            style={{
-              padding: '8px 16px',
-              borderRadius: '6px',
-              background: isActive('/products/create') ? '#e94560' : 'transparent',
-              color: 'white',
-              fontSize: '14px',
-              fontWeight: 500,
-            }}
-          >
-            Yangi mahsulot
-          </Link>
-          <Link
-            to="/orders/create"
-            style={{
-              padding: '8px 16px',
-              borderRadius: '6px',
-              background: isActive('/orders/create') ? '#e94560' : 'transparent',
-              color: 'white',
-              fontSize: '14px',
-              fontWeight: 500,
-            }}
-          >
-            Buyurtma yaratish
-          </Link>
-          <Link
-            to="/statistics"
-            style={{
-              padding: '8px 16px',
-              borderRadius: '6px',
-              background: isActive('/statistics') ? '#e94560' : 'transparent',
-              color: 'white',
-              fontSize: '14px',
-              fontWeight: 500,
-            }}
-          >
-            Statistika
-          </Link>
-        </nav>
+          <nav style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            {links.map((link) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                end
+                style={({ isActive }) => ({
+                  padding: '9px 14px',
+                  borderRadius: 10,
+                  fontSize: 14,
+                  fontWeight: 500,
+                  color: 'white',
+                  background: isActive ? '#e94560' : 'transparent',
+                })}
+              >
+                {link.label}
+              </NavLink>
+            ))}
+
+            <button
+              type="button"
+              onClick={handleLogout}
+              style={{
+                marginLeft: 8,
+                padding: '9px 14px',
+                borderRadius: 10,
+                border: '1px solid rgba(255,255,255,0.25)',
+                background: 'transparent',
+                color: '#ffb3c0',
+                fontSize: 14,
+                fontWeight: 500,
+                cursor: 'pointer',
+              }}
+            >
+              Chiqish
+            </button>
+          </nav>
+        </div>
       </header>
 
-      <main style={{ flex: 1, padding: '24px', maxWidth: '1200px', width: '100%', margin: '0 auto' }}>
-        {children}
+      <main style={{ maxWidth: 1200, margin: '0 auto', padding: '32px 24px 64px' }}>
+        {children ?? <Outlet />}
       </main>
-    </div>
+    </>
   );
 };
 
