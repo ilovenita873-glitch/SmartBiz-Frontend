@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getProducts } from '../services/api';
+import { getProducts, deleteProduct } from '../services/api';
 import { Product } from '../types';
 
 const ProductsPage = () => {
@@ -34,6 +34,17 @@ const ProductsPage = () => {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     fetchProducts();
+  };
+
+  const handleDelete = async (id: string, name: string) => {
+    if (!window.confirm(`"${name}" mahsulotini o‘chirmoqchimisiz?`)) return;
+    try {
+      setError('');
+      await deleteProduct(id);
+      setProducts((prev) => prev.filter((p) => p._id !== id));
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'O‘chirishda xatolik');
+    }
   };
 
   return (
@@ -164,6 +175,25 @@ const ProductsPage = () => {
               <div style={{ marginTop: '12px', fontSize: '13px', color: '#888' }}>
                 Kategoriya: {product.category}
               </div>
+
+              <button
+                type="button"
+                onClick={() => handleDelete(product._id, product.name)}
+                style={{
+                  marginTop: '12px',
+                  width: '100%',
+                  padding: '8px',
+                  background: '#ffebee',
+                  color: '#c62828',
+                  border: 'none',
+                  borderRadius: '8px',
+                  fontWeight: 600,
+                  fontSize: '13px',
+                  cursor: 'pointer',
+                }}
+              >
+                🗑 O‘chirish
+              </button>
             </div>
           ))}
         </div>
